@@ -1,7 +1,5 @@
 import EstimateForm from "./EstimateForm";
 
-const HOUSE_FRONT =
-  "/images/BiCzvrohQrhLekiI.png";
 const BBB_LOGO =
   "/images/OvrIKRhrXjOUvBsh.png";
 
@@ -29,17 +27,40 @@ export default function HeroSection() {
         overflow: "hidden",
       }}
     >
-      {/* Background photo */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `url(${HOUSE_FRONT})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center 30%",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
+      {/* Background photo — optimized, responsive <picture>.
+          AVIF/WebP/JPG at 640/1024/1920. Explicit width/height + object-fit
+          prevent layout shift; fetchPriority high so it loads as the LCP. */}
+      <picture>
+        <source
+          type="image/avif"
+          srcSet="/images/hero/hero-640.avif 640w, /images/hero/hero-1024.avif 1024w, /images/hero/hero-1920.avif 1920w"
+          sizes="100vw"
+        />
+        <source
+          type="image/webp"
+          srcSet="/images/hero/hero-640.webp 640w, /images/hero/hero-1024.webp 1024w, /images/hero/hero-1920.webp 1920w"
+          sizes="100vw"
+        />
+        <img
+          src="/images/hero/hero-1024.jpg"
+          srcSet="/images/hero/hero-640.jpg 640w, /images/hero/hero-1024.jpg 1024w, /images/hero/hero-1920.jpg 1920w"
+          sizes="100vw"
+          width={1200}
+          height={900}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center 30%",
+          }}
+        />
+      </picture>
       {/* Gradient overlay */}
       <div
         style={{

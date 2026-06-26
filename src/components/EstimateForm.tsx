@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { trackLead, postLeadToCRM } from "@/lib/tracking";
 
 const WEBHOOK_URL =
   "https://services.leadconnectorhq.com/hooks/2HOx7nqhyy85pwGlIHvA/webhook-trigger/NgGQTmvmBXN8knCe4mNw";
@@ -38,6 +39,9 @@ export default function EstimateForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, submittedAt: new Date().toISOString() }),
       });
+      // Fire conversion event + forward to CRM (see src/lib/tracking.ts)
+      trackLead("form", { firstName: form.firstName, lastName: form.lastName, phone: form.phone });
+      void postLeadToCRM(form);
       setStatus("success");
     } catch {
       setStatus("error");
@@ -62,7 +66,7 @@ export default function EstimateForm({
     marginBottom: "6px",
     fontSize: "13px",
     fontWeight: 600,
-    color: isGlass ? "rgba(255,255,255,0.75)" : "#374151",
+    color: isGlass ? "rgba(255,255,255,0.92)" : "#374151",
     fontFamily: "var(--font-body)",
     letterSpacing: "0.02em",
   };
@@ -75,7 +79,8 @@ export default function EstimateForm({
     borderRadius: "8px",
     color: isGlass ? "white" : "#111827",
     fontFamily: "var(--font-body)",
-    fontSize: "15px",
+    fontSize: "16px",
+    minHeight: "48px",
     outline: "none",
     transition: "border-color 0.15s, background 0.15s",
     boxSizing: "border-box",
@@ -83,7 +88,11 @@ export default function EstimateForm({
 
   if (status === "success") {
     return (
-      <div style={{ ...containerStyle, textAlign: "center", padding: "48px 28px" }}>
+      <div
+        style={{ ...containerStyle, textAlign: "center", padding: "48px 28px" }}
+        role="status"
+        aria-live="polite"
+      >
         <div
           style={{
             width: "56px",
@@ -96,7 +105,7 @@ export default function EstimateForm({
             margin: "0 auto 16px",
           }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
@@ -109,18 +118,18 @@ export default function EstimateForm({
             letterSpacing: "0.04em",
           }}
         >
-          REQUEST RECEIVED
+          THANKS! WE&apos;LL CALL YOU SOON
         </h3>
         <p
           style={{
             fontFamily: "var(--font-body)",
-            color: isGlass ? "rgba(255,255,255,0.75)" : "#374151",
+            color: isGlass ? "rgba(255,255,255,0.85)" : "#374151",
             fontSize: "15px",
             lineHeight: 1.7,
           }}
         >
-          {successMessage} Questions? Call us at{" "}
-          <a href="tel:4022168850" style={{ color: "#3D6CC0", textDecoration: "none" }}>
+          Thanks! We&apos;ll call you within 1 business day. {successMessage} Questions? Call us at{" "}
+          <a href="tel:+14022168850" style={{ color: "#9DC0FF", textDecoration: "underline" }}>
             (402) 216-8850
           </a>
         </p>
@@ -129,7 +138,28 @@ export default function EstimateForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} style={containerStyle}>
+    <form onSubmit={handleSubmit} style={containerStyle} aria-label="Free siding estimate request">
+      {/* Trust line */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          marginBottom: "14px",
+          fontFamily: "var(--font-body)",
+          fontSize: "13px",
+          fontWeight: 600,
+          color: isGlass ? "rgba(255,255,255,0.92)" : "#374151",
+          lineHeight: 1.4,
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true" style={{ flexShrink: 0 }}>
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7.18 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+        <span>
+          Join 500+ Omaha homeowners &mdash; <strong style={{ fontWeight: 700 }}>4.9 on Google</strong>
+        </span>
+      </div>
       <h3
         style={{
           fontFamily: "var(--font-body)",
@@ -157,6 +187,7 @@ export default function EstimateForm({
               name="firstName"
               type="text"
               required
+              autoComplete="given-name"
               placeholder="Jane"
               value={form.firstName}
               onChange={handleChange}
@@ -172,6 +203,7 @@ export default function EstimateForm({
               name="lastName"
               type="text"
               required
+              autoComplete="family-name"
               placeholder="Smith"
               value={form.lastName}
               onChange={handleChange}
@@ -188,6 +220,8 @@ export default function EstimateForm({
             id="phone"
             name="phone"
             type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
             required
             placeholder="(402) 555-0100"
             value={form.phone}

@@ -1,0 +1,83 @@
+// Centralized lead-tracking for the landing page.
+//
+// Two responsibilities:
+//   1. Push a "generate_lead" event to GTM/gtag (Google dataLayer) so paid-traffic
+//      conversions are attributed correctly.
+//   2. Forward the lead to our CRM via a single webhook function (postLeadToCRM).
+//
+// Point CRM_WEBHOOK_URL at the endpoint you want leads POSTed to.
+
+// TODO: Replace with your CRM / webhook endpoint (e.g. a Zapier catch hook,
+// a GoHighLevel inbound webhook, or your own /api/lead route).
+const CRM_WEBHOOK_URL = "";
+
+type LeadMethod = "form" | "call" | "text";
+
+interface LeadDetails {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  [key: string]: unknown;
+}
+
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+/**
+ * Fire a single "generate_lead" conversion event into the Google dataLayer
+ * (works with both gtag.js and GTM). Safe to call on the client only.
+ */
+export function trackLead(method: LeadMethod, details: LeadDetails = {}): void {
+  if (typeof window === "undefined") return;
+
+  const payload = {
+    event: "generate_lead",
+    method,
+    ...details,
+  };
+
+  // dataLayer (GTM)
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(payload);
+
+  // gtag.js (direct)
+  if (typeof window.gtag === "function") {
+    window.gtag("event", "generate_lead", { method, ...details });
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[v0] generate_lead", payload);
+  }
+}
+
+/**
+ * POST a submitted lead to the CRM webhook. Fire-and-forget; never throws so it
+ * can't block the user-facing thank-you state.
+ */
+export async function postLeadToCRM(details: LeadDetails): Promise<void> {
+  if (!CRM_WEBHOOK_URL) return;
+  try {
+    await fetch(CRM_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...details, submittedAt: new Date().toISOString() }),
+      keepalive: true,
+    });
+  } catch (err) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[v0] postLeadToCRM failed", err);
+    }
+  }
+}
+
+/**
+ * Convenience helper for tel:/sms: links. Attach to onClick on any phone/text
+ * link so calls and texts are counted as leads too.
+ */
+export function trackContactClick(method: "call" | "text"): void {
+  trackLead(method);
+}
