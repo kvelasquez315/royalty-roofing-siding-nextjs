@@ -91,19 +91,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`bg-background ${bebasNeue.variable} ${dmSans.variable}`}>
       <head>
-        {/* Preload the LCP hero image (AVIF, responsive) so it starts downloading immediately */}
-        <link
-          rel="preload"
-          as="image"
-          type="image/avif"
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          {...({
-            imageSrcSet:
-              "/images/hero/hero-640.avif 640w, /images/hero/hero-1024.avif 1024w, /images/hero/hero-1920.avif 1920w",
-            imageSizes: "100vw",
-            fetchPriority: "high",
-          } as any)}
-        />
         {/* LocalBusiness structured data */}
         <script
           type="application/ld+json"

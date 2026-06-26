@@ -27,47 +27,17 @@ export default function HeroSection() {
         overflow: "hidden",
       }}
     >
-      {/* Background photo — optimized, responsive <picture>.
-          AVIF/WebP/JPG at 640/1024/1920. Explicit width/height + object-fit
-          prevent layout shift; fetchPriority high so it loads as the LCP. */}
-      <picture>
-        <source
-          type="image/avif"
-          srcSet="/images/hero/hero-640.avif 640w, /images/hero/hero-1024.avif 1024w, /images/hero/hero-1920.avif 1920w"
-          sizes="100vw"
-        />
-        <source
-          type="image/webp"
-          srcSet="/images/hero/hero-640.webp 640w, /images/hero/hero-1024.webp 1024w, /images/hero/hero-1920.webp 1920w"
-          sizes="100vw"
-        />
-        <img
-          src="/images/hero/hero-1024.jpg"
-          srcSet="/images/hero/hero-640.jpg 640w, /images/hero/hero-1024.jpg 1024w, /images/hero/hero-1920.jpg 1920w"
-          sizes="100vw"
-          width={1200}
-          height={900}
-          alt=""
-          aria-hidden="true"
-          fetchPriority="high"
-          decoding="async"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center 30%",
-          }}
-        />
-      </picture>
-      {/* Gradient overlay */}
+      {/* Pure CSS brand gradient — zero network requests, paints instantly.
+          Diagonal navy→royal-blue using the site's brand colors (#0A1220 navy,
+          #3D6CC0 royal blue). The bulk stays dark so white hero text keeps
+          strong WCAG AA contrast; a soft radial accent adds premium depth. */}
       <div
+        aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(105deg, rgba(6,12,24,0.92) 0%, rgba(6,12,24,0.82) 50%, rgba(6,12,24,0.55) 100%)",
+            "radial-gradient(120% 120% at 85% 15%, rgba(61,108,192,0.35) 0%, rgba(61,108,192,0) 55%), linear-gradient(135deg, #0A1220 0%, #1B2A4A 45%, #2B4C8C 100%)",
         }}
       />
 
