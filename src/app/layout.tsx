@@ -1,6 +1,23 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Bebas_Neue, DM_Sans } from "next/font/google";
 import "./globals.css";
+
+// Self-hosted via next/font — generates size-adjusted fallback metrics that
+// eliminate the layout shift (CLS) the prior <link>+swap approach caused.
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-bebas",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-dm",
+});
 
 const SITE_URL = "https://siding.royaltyroofing.org";
 const TITLE = "Free Siding Estimate | Royalty Roofing and Siding | Omaha, NE";
@@ -72,14 +89,8 @@ const LOCAL_BUSINESS_JSONLD = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="bg-background">
+    <html lang="en" className={`bg-background ${bebasNeue.variable} ${dmSans.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap"
-          rel="stylesheet"
-        />
         {/* Preload the LCP hero image (AVIF, responsive) so it starts downloading immediately */}
         <link
           rel="preload"

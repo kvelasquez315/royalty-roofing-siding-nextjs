@@ -35,8 +35,8 @@
   --color-gold: oklch(0.75 0.14 80);
   --color-offwhite: oklch(0.97 0.005 80);
   --color-slate: oklch(0.35 0.04 255);
-  --font-display: "Bebas Neue", sans-serif;
-  --font-body: "DM Sans", sans-serif;
+  --font-display: var(--font-bebas), "Bebas Neue", sans-serif;
+  --font-body: var(--font-dm), "DM Sans", sans-serif;
 }
 
 :root {
