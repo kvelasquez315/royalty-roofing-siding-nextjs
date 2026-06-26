@@ -28,8 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: TITLE,
   description: DESCRIPTION,
-  // Paid-traffic landing page: keep it out of the organic index.
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   icons: { icon: { url: "/favicon.ico", type: "image/x-icon" } },
   openGraph: {
