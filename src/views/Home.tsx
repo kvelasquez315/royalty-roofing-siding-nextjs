@@ -5,6 +5,7 @@ import HonestAssessmentSection from "@/components/HonestAssessmentSection";
 import MaterialsSection from "@/components/MaterialsSection";
 import Navbar from "@/components/Navbar";
 import ReviewsSection from "@/components/ReviewsSection";
+import SidingCostSection from "@/components/SidingCostSection";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import TeamBannerSection from "@/components/TeamBannerSection";
 import TrustBar from "@/components/TrustBar";
@@ -19,6 +20,7 @@ export default function Home() {
       <MaterialsSection />
       <ReviewsSection />
       <TeamBannerSection />
+      <SidingCostSection />
       <BottomFormSection />
       <Footer />
       <StickyMobileCTA />

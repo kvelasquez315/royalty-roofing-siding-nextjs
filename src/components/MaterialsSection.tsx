@@ -173,7 +173,7 @@ export default function MaterialsSection() {
               lineHeight: 1.75,
             }}
           >
-            Not sure which material is right for your home? We'll help you figure it out.
+            Not sure which is right for your home? Get a free recommendation.
           </p>
           <button
             onClick={scrollToForm}
@@ -197,7 +197,7 @@ export default function MaterialsSection() {
               (e.currentTarget as HTMLButtonElement).style.background = "#3D6CC0";
             }}
           >
-            GET A FREE ESTIMATE
+            GET A FREE RECOMMENDATION &rarr;
           </button>
         </div>
       </div>
