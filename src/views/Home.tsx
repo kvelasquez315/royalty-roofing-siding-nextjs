@@ -4,7 +4,6 @@ import HeroSection from "@/components/HeroSection";
 import HonestAssessmentSection from "@/components/HonestAssessmentSection";
 import MaterialsSection from "@/components/MaterialsSection";
 import Navbar from "@/components/Navbar";
-import ProjectsGallery from "@/components/ProjectsGallery";
 import ReviewsSection from "@/components/ReviewsSection";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import TeamBannerSection from "@/components/TeamBannerSection";
@@ -18,7 +17,6 @@ export default function Home() {
       <TrustBar />
       <HonestAssessmentSection />
       <MaterialsSection />
-      <ProjectsGallery />
       <ReviewsSection />
       <TeamBannerSection />
       <BottomFormSection />

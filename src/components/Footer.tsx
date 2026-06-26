@@ -6,7 +6,6 @@ const LOGO =
 
 const NAV_LINKS = [
   { label: "Why Royalty", id: "why-royalty" },
-  { label: "Projects", id: "projects" },
   { label: "Reviews", id: "reviews" },
   { label: "Our Team", id: "team" },
   { label: "Get Estimate", id: "bottom-form" },
