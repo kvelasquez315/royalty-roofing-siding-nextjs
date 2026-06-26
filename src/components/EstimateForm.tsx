@@ -10,13 +10,16 @@ interface EstimateFormProps {
   headerText?: string;
   buttonText?: string;
   successMessage?: string;
+  /** Where this form instance lives, used for conversion attribution. */
+  source?: string;
 }
 
 export default function EstimateForm({
   variant = "glass",
   headerText = "Get Your Free Consultation",
   buttonText = "GET MY FREE ESTIMATE",
-  successMessage = "We'll be in touch within one business day to schedule your free roof inspection.",
+  successMessage = "We'll be in touch within one business day to schedule your free siding estimate.",
+  source = "form",
 }: EstimateFormProps) {
   const [form, setForm] = useState({
     firstName: "",
@@ -40,8 +43,8 @@ export default function EstimateForm({
         body: JSON.stringify({ ...form, submittedAt: new Date().toISOString() }),
       });
       // Fire conversion event + forward to CRM (see src/lib/tracking.ts)
-      trackLead("form", { firstName: form.firstName, lastName: form.lastName, phone: form.phone });
-      void postLeadToCRM(form);
+      trackLead(source, { firstName: form.firstName, lastName: form.lastName, phone: form.phone });
+      void postLeadToCRM({ ...form, source });
       setStatus("success");
     } catch {
       setStatus("error");
@@ -234,6 +237,7 @@ export default function EstimateForm({
         <button
           type="submit"
           disabled={status === "loading"}
+          aria-busy={status === "loading"}
           style={{
             width: "100%",
             padding: "18px 24px",
@@ -270,18 +274,52 @@ export default function EstimateForm({
             buttonText
           )}
         </button>
-        {status === "error" && (
-          <p
-            style={{
-              color: "#f87171",
-              fontSize: "13px",
-              textAlign: "center",
-              fontFamily: "var(--font-body)",
-            }}
-          >
-            Something went wrong. Please call us at (402) 216-8850.
-          </p>
-        )}
+        <div aria-live="assertive" role="alert">
+          {status === "error" && (
+            <p
+              style={{
+                color: "#f87171",
+                fontSize: "13px",
+                textAlign: "center",
+                fontFamily: "var(--font-body)",
+              }}
+            >
+              Something went wrong. Please call us at (402) 216-8850.
+            </p>
+          )}
+        </div>
+        {/* Reassurance microcopy directly under the submit button */}
+        <p
+          style={{
+            fontSize: "13px",
+            lineHeight: 1.5,
+            textAlign: "center",
+            color: isGlass ? "rgba(255,255,255,0.82)" : "#374151",
+            fontFamily: "var(--font-body)",
+            fontWeight: 600,
+            margin: 0,
+          }}
+        >
+          <span style={{ color: "#9DC0FF" }} aria-hidden="true">
+            &#10003;
+          </span>{" "}
+          Free inspection &middot; No obligation &middot; We call within 1
+          business day.
+        </p>
+        {/* Consent statement (does not block submit) */}
+        <p
+          style={{
+            fontSize: "11px",
+            lineHeight: 1.5,
+            textAlign: "center",
+            color: isGlass ? "rgba(255,255,255,0.6)" : "#6B7280",
+            fontFamily: "var(--font-body)",
+            margin: 0,
+          }}
+        >
+          By submitting, you agree to receive calls/texts about your project.
+          Msg &amp; data rates may apply.
+        </p>
       </div>
       <style>{`
         @media (max-width: 640px) {

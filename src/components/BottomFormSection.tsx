@@ -1,5 +1,6 @@
 // id="bottom-form" — dark navy bg, headline + trust checklist left, form right
 import EstimateForm from "./EstimateForm";
+import { trackCall } from "@/lib/tracking";
 
 export default function BottomFormSection() {
   return (
@@ -46,7 +47,8 @@ export default function BottomFormSection() {
             you what it needs and what it costs. Response within one business day.
           </p>
           <a
-            href="tel:4022168850"
+            href="tel:+14022168850"
+            onClick={() => trackCall("bottom_form")}
             style={{
               display: "flex",
               alignItems: "center",
@@ -123,8 +125,8 @@ export default function BottomFormSection() {
         <div>
           <EstimateForm
             variant="glass"
+            source="bottom_form"
             headerText="Get Your Free Consultation"
-
             buttonText="GET MY FREE ESTIMATE"
           />
         </div>

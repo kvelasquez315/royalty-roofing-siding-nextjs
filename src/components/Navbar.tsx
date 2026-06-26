@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackCall, trackText, trackCTA } from "@/lib/tracking";
 
 const LOGO =
   "/images/jgBpqGuFanZshxxZ.png";
@@ -15,6 +16,7 @@ export default function Navbar() {
 
   const NAV_LINKS = [
     { label: "Why Royalty", id: "why-royalty" },
+    { label: "Projects", id: "projects" },
     { label: "Reviews", id: "reviews" },
     { label: "Our Team", id: "team" },
     { label: "Get Estimate", id: "bottom-form" },
@@ -103,8 +105,9 @@ export default function Navbar() {
         {/* Right side */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           <a
-            href="tel:4022168850"
+            href="tel:+14022168850"
             className="hidden sm:flex"
+            onClick={() => trackCall("navbar")}
             style={{
               alignItems: "center",
               gap: "7px",
@@ -128,8 +131,31 @@ export default function Navbar() {
             </svg>
             (402) 216-8850
           </a>
+          <a
+            href="sms:+14022168850"
+            className="hidden md:inline-flex"
+            onClick={() => trackText("navbar")}
+            style={{
+              alignItems: "center",
+              gap: "6px",
+              color: "#3D6CC0",
+              fontFamily: "var(--font-body)",
+              fontWeight: 600,
+              fontSize: "15px",
+              textDecoration: "none",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Text us
+          </a>
           <button
-            onClick={() => scrollTo("bottom-form")}
+            onClick={() => {
+              trackCTA("navbar_free_estimate");
+              scrollTo("bottom-form");
+            }}
             className="hidden lg:block"
             style={{
               background: "#3D6CC0",
@@ -237,7 +263,8 @@ export default function Navbar() {
             </button>
           ))}
           <a
-            href="tel:4022168850"
+            href="tel:+14022168850"
+            onClick={() => trackCall("navbar_mobile")}
             style={{
               marginTop: "12px",
               display: "flex",
@@ -266,8 +293,35 @@ export default function Navbar() {
             </svg>
             Call (402) 216-8850
           </a>
+          <a
+            href="sms:+14022168850"
+            onClick={() => trackText("navbar_mobile")}
+            style={{
+              marginTop: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              background: "rgba(61,108,192,0.08)",
+              color: "#3D6CC0",
+              fontFamily: "var(--font-body)",
+              fontWeight: 700,
+              fontSize: "17px",
+              padding: "14px",
+              borderRadius: "8px",
+              textDecoration: "none",
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Text Us
+          </a>
           <button
-            onClick={() => scrollTo("bottom-form")}
+            onClick={() => {
+              trackCTA("navbar_mobile_free_estimate");
+              scrollTo("bottom-form");
+            }}
             style={{
               marginTop: "8px",
               background: "#3D6CC0",

@@ -1,9 +1,12 @@
 // White footer — logo, nav links, contact info, copyright, privacy policy
+import { trackCall } from "@/lib/tracking";
+
 const LOGO =
   "/images/jgBpqGuFanZshxxZ.png";
 
 const NAV_LINKS = [
   { label: "Why Royalty", id: "why-royalty" },
+  { label: "Projects", id: "projects" },
   { label: "Reviews", id: "reviews" },
   { label: "Our Team", id: "team" },
   { label: "Get Estimate", id: "bottom-form" },
@@ -34,6 +37,8 @@ export default function Footer() {
             <img
               src={LOGO}
               alt="Royalty Roofing and Siding"
+              loading="lazy"
+              decoding="async"
               style={{ height: "52px", width: "auto", marginBottom: "16px", display: "block" }}
             />
             <p
@@ -107,7 +112,8 @@ export default function Footer() {
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <a
-                href="tel:4022168850"
+                href="tel:+14022168850"
+                onClick={() => trackCall("footer")}
                 style={{
                   fontSize: "14px",
                   color: "#0A1220",

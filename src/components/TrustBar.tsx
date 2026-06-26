@@ -77,6 +77,8 @@ export default function TrustBar() {
               key={year}
               src={src}
               alt={`Best of Omaha ${year} Winner — ${label}`}
+              loading="lazy"
+              decoding="async"
               style={{
                 height: "130px",
                 width: "auto",

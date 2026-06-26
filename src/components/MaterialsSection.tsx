@@ -114,6 +114,8 @@ export default function MaterialsSection() {
                 <img
                   src={logo}
                   alt={alt}
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     width: logoWidth,
                     maxWidth: "100%",

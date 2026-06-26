@@ -11,7 +11,9 @@
 // a GoHighLevel inbound webhook, or your own /api/lead route).
 const CRM_WEBHOOK_URL = "";
 
-type LeadMethod = "form" | "call" | "text";
+// "form" covers any form submission; the specific form instance (hero,
+// bottom_form, …) is passed through so leads can be attributed by source.
+type LeadMethod = "form" | "call" | "text" | (string & {});
 
 interface LeadDetails {
   firstName?: string;
@@ -80,4 +82,31 @@ export async function postLeadToCRM(details: LeadDetails): Promise<void> {
  */
 export function trackContactClick(method: "call" | "text"): void {
   trackLead(method);
+}
+
+/** Attach to onClick of any tel: link. `location` records where it was clicked. */
+export function trackCall(location?: string): void {
+  trackLead("call", location ? { location } : {});
+}
+
+/** Attach to onClick of any sms: link. `location` records where it was clicked. */
+export function trackText(location?: string): void {
+  trackLead("text", location ? { location } : {});
+}
+
+/**
+ * Fire a lightweight CTA-click event (e.g. "Free Estimate" buttons that scroll
+ * to the form). Not a lead yet, but useful for funnel analysis.
+ */
+export function trackCTA(label: string): void {
+  if (typeof window === "undefined") return;
+  const payload = { event: "cta_click", label };
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(payload);
+  if (typeof window.gtag === "function") {
+    window.gtag("event", "cta_click", { label });
+  }
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[v0] cta_click", payload);
+  }
 }

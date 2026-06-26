@@ -155,8 +155,10 @@ export default function HonestAssessmentSection() {
           <div style={{ position: "relative" }}>
             <img
               src={SIDING_PHOTO}
-              alt="Royalty Roofing completed job"
+              alt="Newly installed siding on an Omaha home completed by Royalty Roofing and Siding"
               className="why-photo"
+              loading="lazy"
+              decoding="async"
               style={{
                 width: "100%",
                 height: "600px",

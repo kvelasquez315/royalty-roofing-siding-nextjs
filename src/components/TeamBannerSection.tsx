@@ -1,5 +1,6 @@
 // id="team" — AJ and David Velasquez, family-owned story
 // Using uploaded team photos
+import { trackCall } from "@/lib/tracking";
 
 const TEAM_1 = "/images/PGRmIAVopyryyJjg.png";
 const TEAM_2 = "/images/TwjoMTfQFubmISik.png";
@@ -87,7 +88,8 @@ export default function TeamBannerSection() {
             ))}
           </div>
           <a
-            href="tel:4022168850"
+            href="tel:+14022168850"
+            onClick={() => trackCall("team_section")}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -143,6 +145,8 @@ export default function TeamBannerSection() {
             <img
               src={TEAM_1}
               alt="AJ Velasquez, Owner, Royalty Roofing and Siding"
+              loading="lazy"
+              decoding="async"
               style={{
                 width: "100%",
                 height: "100%",
@@ -161,6 +165,8 @@ export default function TeamBannerSection() {
             <img
               src={TEAM_2}
               alt="David Velasquez, Co-Owner, Royalty Roofing and Siding"
+              loading="lazy"
+              decoding="async"
               style={{
                 width: "100%",
                 height: "100%",
