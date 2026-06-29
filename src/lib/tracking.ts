@@ -11,6 +11,11 @@
 // a GoHighLevel inbound webhook, or your own /api/lead route).
 const CRM_WEBHOOK_URL = "";
 
+// Google Ads conversion for "Submit lead form" (siding.royaltyroofing.org).
+// The base gtag.js tag for AW-931355603 is loaded in app/layout.tsx; this is
+// the per-conversion send_to label fired when the lead form is submitted.
+const GOOGLE_ADS_FORM_CONVERSION = "AW-931355603/4kKWCLv58MccENO3jbwD";
+
 // "form" covers any form submission; the specific form instance (hero,
 // bottom_form, …) is passed through so leads can be attributed by source.
 type LeadMethod = "form" | "call" | "text" | (string & {});
@@ -49,6 +54,12 @@ export function trackLead(method: LeadMethod, details: LeadDetails = {}): void {
   // gtag.js (direct)
   if (typeof window.gtag === "function") {
     window.gtag("event", "generate_lead", { method, ...details });
+
+    // Google Ads conversion — fires only on actual form submissions, not on
+    // call/text link clicks (which also route through trackLead).
+    if (method !== "call" && method !== "text") {
+      window.gtag("event", "conversion", { send_to: GOOGLE_ADS_FORM_CONVERSION });
+    }
   }
 
   if (process.env.NODE_ENV !== "production") {
