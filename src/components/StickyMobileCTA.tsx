@@ -62,7 +62,7 @@ export default function StickyMobileCTA() {
         Call
       </a>
       <a
-        href="sms:+14022168850"
+        href="sms:+14029839816"
         onClick={() => trackText("sticky_mobile")}
         aria-label="Text us"
         style={{

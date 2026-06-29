@@ -131,7 +131,7 @@ export default function Navbar() {
             (402) 216-8850
           </a>
           <a
-            href="sms:+14022168850"
+            href="sms:+14029839816"
             className="hidden md:inline-flex"
             onClick={() => trackText("navbar")}
             style={{
@@ -293,7 +293,7 @@ export default function Navbar() {
             Call (402) 216-8850
           </a>
           <a
-            href="sms:+14022168850"
+            href="sms:+14029839816"
             onClick={() => trackText("navbar_mobile")}
             style={{
               marginTop: "8px",
