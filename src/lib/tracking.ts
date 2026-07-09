@@ -16,6 +16,9 @@ const CRM_WEBHOOK_URL = "";
 // the per-conversion send_to label fired when the lead form is submitted.
 const GOOGLE_ADS_FORM_CONVERSION = "AW-931355603/4kKWCLv58MccENO3jbwD";
 
+// Google Ads conversion for "Click to call" — fired when a tel: link is clicked.
+const GOOGLE_ADS_CALL_CONVERSION = "AW-931355603/uVslCNmV3c0cENO3jbwD";
+
 // "form" covers any form submission; the specific form instance (hero,
 // bottom_form, …) is passed through so leads can be attributed by source.
 type LeadMethod = "form" | "call" | "text" | (string & {});
@@ -55,9 +58,16 @@ export function trackLead(method: LeadMethod, details: LeadDetails = {}): void {
   if (typeof window.gtag === "function") {
     window.gtag("event", "generate_lead", { method, ...details });
 
-    // Google Ads conversion — fires only on actual form submissions, not on
-    // call/text link clicks (which also route through trackLead).
-    if (method !== "call" && method !== "text") {
+    // Google Ads conversions, routed by lead method.
+    if (method === "call") {
+      // Click-to-call conversion.
+      window.gtag("event", "conversion", {
+        send_to: GOOGLE_ADS_CALL_CONVERSION,
+        value: 1.0,
+        currency: "USD",
+      });
+    } else if (method !== "text") {
+      // Form submissions (text clicks are tracked as leads, not conversions).
       window.gtag("event", "conversion", { send_to: GOOGLE_ADS_FORM_CONVERSION });
     }
   }
