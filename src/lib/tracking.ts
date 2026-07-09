@@ -37,9 +37,35 @@ declare global {
   }
 }
 
+// De-dupe guard: remembers the last time each Ads conversion label was sent so
+// a double-bound handler, React re-render, or rapid re-click can't fire the
+// same conversion twice. Any repeat within the window is dropped.
+const CONVERSION_DEDUPE_MS = 2000;
+const sentConversions = new Map<string, number>();
+
 /**
- * Fire a single "generate_lead" conversion event into the Google dataLayer
- * (works with both gtag.js and GTM). Safe to call on the client only.
+ * Fire a Google Ads conversion exactly once per de-dupe window. Guarded so it
+ * can never double-count from duplicate calls or re-bound handlers.
+ */
+function reportAdsConversion(sendTo: string): void {
+  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+
+  const now = Date.now();
+  const last = sentConversions.get(sendTo);
+  if (last && now - last < CONVERSION_DEDUPE_MS) return;
+  sentConversions.set(sendTo, now);
+
+  window.gtag("event", "conversion", {
+    send_to: sendTo,
+    value: 1.0,
+    currency: "USD",
+  });
+}
+
+/**
+ * Fire a single "generate_lead" event into the Google dataLayer (works with
+ * both gtag.js and GTM). This is analytics only — it does NOT send an Ads
+ * conversion. Safe to call on the client only.
  */
 export function trackLead(method: LeadMethod, details: LeadDetails = {}): void {
   if (typeof window === "undefined") return;
@@ -57,24 +83,20 @@ export function trackLead(method: LeadMethod, details: LeadDetails = {}): void {
   // gtag.js (direct)
   if (typeof window.gtag === "function") {
     window.gtag("event", "generate_lead", { method, ...details });
-
-    // Google Ads conversions, routed by lead method.
-    if (method === "call") {
-      // Click-to-call conversion.
-      window.gtag("event", "conversion", {
-        send_to: GOOGLE_ADS_CALL_CONVERSION,
-        value: 1.0,
-        currency: "USD",
-      });
-    } else if (method !== "text") {
-      // Form submissions (text clicks are tracked as leads, not conversions).
-      window.gtag("event", "conversion", { send_to: GOOGLE_ADS_FORM_CONVERSION });
-    }
   }
 
   if (process.env.NODE_ENV !== "production") {
     console.log("[v0] generate_lead", payload);
   }
+}
+
+/**
+ * Record a successful lead-form submission: pushes the generate_lead event AND
+ * fires the Google Ads form conversion exactly once. Call only on success.
+ */
+export function trackFormConversion(source: string, details: LeadDetails = {}): void {
+  trackLead(source, details);
+  reportAdsConversion(GOOGLE_ADS_FORM_CONVERSION);
 }
 
 /**
@@ -105,9 +127,14 @@ export function trackContactClick(method: "call" | "text"): void {
   trackLead(method);
 }
 
-/** Attach to onClick of any tel: link. `location` records where it was clicked. */
+/**
+ * Attach to onClick of any tel: link. Pushes the generate_lead event AND fires
+ * the Google Ads click-to-call conversion exactly once per click (guarded).
+ * `location` records where it was clicked.
+ */
 export function trackCall(location?: string): void {
   trackLead("call", location ? { location } : {});
+  reportAdsConversion(GOOGLE_ADS_CALL_CONVERSION);
 }
 
 /** Attach to onClick of any sms: link. `location` records where it was clicked. */

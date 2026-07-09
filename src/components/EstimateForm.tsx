@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { trackLead, postLeadToCRM } from "@/lib/tracking";
+import { trackFormConversion, postLeadToCRM } from "@/lib/tracking";
 
 const WEBHOOK_URL =
   "https://services.leadconnectorhq.com/hooks/2HOx7nqhyy85pwGlIHvA/webhook-trigger/NgGQTmvmBXN8knCe4mNw";
@@ -35,6 +35,8 @@ export default function EstimateForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Guard against double-submit (rapid clicks / re-entrant calls).
+    if (status === "loading") return;
     setStatus("loading");
     try {
       await fetch(WEBHOOK_URL, {
@@ -42,8 +44,13 @@ export default function EstimateForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, submittedAt: new Date().toISOString() }),
       });
-      // Fire conversion event + forward to CRM (see src/lib/tracking.ts)
-      trackLead(source, { firstName: form.firstName, lastName: form.lastName, phone: form.phone });
+      // On success only: push generate_lead + fire the Ads conversion once,
+      // then forward to CRM (see src/lib/tracking.ts).
+      trackFormConversion(source, {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.phone,
+      });
       void postLeadToCRM({ ...form, source });
       setStatus("success");
     } catch {
