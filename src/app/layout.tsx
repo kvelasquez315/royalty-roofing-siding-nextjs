@@ -22,7 +22,7 @@ const dmSans = DM_Sans({
 const SITE_URL = "https://siding.royaltyroofing.org";
 const TITLE = "Free Siding Estimate | Royalty Roofing and Siding | Omaha, NE";
 const DESCRIPTION =
-  "Get a free, no-obligation siding estimate from Omaha's most trusted siding contractor. Family owned since 2010, 4.9 stars on Google with 500+ reviews, and Best of Omaha 7 years running. We call within 1 business day.";
+  "Free siding estimate from Omaha's top-rated siding contractor. 4.9 stars, 500+ Google reviews. No obligation. We call within 1 business day.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
