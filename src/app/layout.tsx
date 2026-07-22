@@ -101,7 +101,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'AW-931355603');`}
+gtag('config', 'AW-931355603');
+gtag('config', 'AW-931355603/JUMmCLPWodQcENO3jbwD', {
+  'phone_conversion_number': '(402) 216-8850'
+});`}
         </Script>
       </head>
       <body>
